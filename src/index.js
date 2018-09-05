@@ -14,7 +14,7 @@ const colorMap = {
 const colorNode = (node, content) => {
   Object.keys(colorMap).some((key) => {
     if (node.classList.contains(key)) {
-      content = `\u001b[${colorMap[key]}m${content}\u001b[m`;
+      content = `\u0015[${colorMap[key]}m${content}\u0015[m`;
       return true;
     }
   });
