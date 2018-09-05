@@ -35,37 +35,51 @@ const extractText = (node) => {
 }
 
 const extract = () => {
-  let selector = '#submission-form-app .CodeMirror-lines .CodeMirror-line';
+  let selector = '.ReactCodeMirror .CodeMirror-lines .CodeMirror-line';
   let nodes = Array.from(document.querySelectorAll(selector));
   return nodes.map(extractText).join('\n');
 }
 
-let btnBar = document.querySelector('.control-btn-bar > div');
-if (!btnBar) {
-  return;
-}
 
-let wrapper = document.createElement('wrapper');
-wrapper.innerHTML = [
-  `<span id="btn-2ptt">`,
+let initInterval = setInterval(() => {
+  let btnBar = document.querySelector('.control-btn-bar > div');
+  if (!btnBar) {
+    return;
+  }
+
+  clearInterval(initInterval)
+
+  let wrapper = document.createElement('wrapper');
+  wrapper.innerHTML = [
     `<span`,
-      ` class="code-btn btn btn-default"`,
+      ` id="btn-2ptt"`,
+      ` class="editor-popover"`,
+      ` data-toggle="popover"`,
+      ` data-trigger="hover"`,
+      ` data-placement="top"`,
+      ` data-content="Copy code"`,
+      ` data-container=""`,
       ` aria-hidden="true"`,
       ` style="cursor: pointer;"`,
+      ` data-original-title=""`,
+      ` title=""`,
     `>`,
-      `<span class="fa fa-clipboard"></span>`,
+      `<button class="editor-btn code-btn btn btn-default">`,
+        `<i class="fa fa-clipboard"></i>`,
+      `</button>`,
     `</span>`,
-  `</span>`
-].join('');
+  ].join('');
 
-let rightEl = btnBar.querySelector('.pull-right');
-btnBar.insertBefore(wrapper, rightEl);
+  let btn = wrapper.firstElementChild;
 
-let btn = wrapper.querySelector('#btn-2ptt');
-btn.addEventListener('click', () => {
-  btn.dataset.clipboardText = extract();
-});
+  let hiddenEl = btnBar.querySelector('.editor-toolbar > .hidden-xs');
+  hiddenEl.insertAdjacentElement('afterend', btn)
 
-let clipboard = new Clipboard('#btn-2ptt');
+  btn.addEventListener('click', () => {
+    btn.dataset.clipboardText = extract();
+  });
+
+  let clipboard = new Clipboard('#btn-2ptt');
+}, 1000)
 
 })()
