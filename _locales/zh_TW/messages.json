@@ -4,5 +4,8 @@
   },
   "ext_description": {
     "message": "複製有顏色的 code ~"
+  },
+  "popup_title": {
+    "message": "設定"
   }
 }

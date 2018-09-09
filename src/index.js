@@ -11,10 +11,12 @@ const colorMap = {
   'cm-type': '1;32'
 };
 
+let control = `\u0015`;
+
 const colorNode = (node, content) => {
   Object.keys(colorMap).some((key) => {
     if (node.classList.contains(key)) {
-      content = `\u0015[${colorMap[key]}m${content}\u0015[m`;
+      content = `${control}[${colorMap[key]}m${content}${control}[m`;
       return true;
     }
   });
@@ -40,6 +42,20 @@ const extract = () => {
   return nodes.map(extractText).join('\n');
 }
 
+const set = (values) => {
+  control = values.control;
+};
+
+const load = () => {
+  return (
+    new Promise((resolve, reject) => {
+      chrome.storage.sync.get({
+        control: control
+      }, resolve)
+    })
+    .then(set)
+  );
+};
 
 let initInterval = setInterval(() => {
   let btnBar = document.querySelector('.control-btn-bar > div');
@@ -47,7 +63,7 @@ let initInterval = setInterval(() => {
     return;
   }
 
-  clearInterval(initInterval)
+  clearInterval(initInterval);
 
   let wrapper = document.createElement('wrapper');
   wrapper.innerHTML = [
@@ -76,7 +92,9 @@ let initInterval = setInterval(() => {
   hiddenEl.insertAdjacentElement('afterend', btn)
 
   btn.addEventListener('click', () => {
-    btn.dataset.clipboardText = extract();
+    load().then(() => {
+      btn.dataset.clipboardText = extract();
+    });
   });
 
   let clipboard = new Clipboard('#btn-2ptt');
